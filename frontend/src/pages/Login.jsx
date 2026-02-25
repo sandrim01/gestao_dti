@@ -16,7 +16,8 @@ const Login = () => {
             await login(email, password);
             navigate('/');
         } catch (err) {
-            setError('Credenciais inválidas. Tente novamente.');
+            console.error('Erro de login:', err);
+            setError(err.response?.data?.message || 'Erro ao conectar com o servidor. Verifique sua conexão.');
         }
     };
 
