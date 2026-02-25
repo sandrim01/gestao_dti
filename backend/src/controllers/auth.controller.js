@@ -58,14 +58,18 @@ const login = async (req, res) => {
 
         const isPasswordValid = await bcrypt.compare(password, user.password);
         if (!isPasswordValid) {
-            return res.status(401).json({ message: 'Invalid credentials' });
+            console.log(`[Login] Senha incorreta para: ${email}`);
+            return res.status(401).json({ message: 'Senha incorreta.' });
         }
 
+        const secret = process.env.JWT_SECRET || 'fallback_secret_gestao_dti_2024';
         const token = jwt.sign(
             { id: user.id, role: user.role, team: user.team },
-            process.env.JWT_SECRET,
+            secret,
             { expiresIn: '1d' }
         );
+
+        console.log(`[Login] Sucesso: ${email}`);
 
         // Auditoria
         await prisma.auditLog.create({
